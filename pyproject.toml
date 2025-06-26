@@ -1,0 +1,14 @@
+[project]
+name = "delayed-clear"
+version = "0.1.0"
+description = "For internal use"
+readme = "README.md"
+authors = [
+    { name = "Tobias Hoffmann", email = "garbaz.github@pm.me" }
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
