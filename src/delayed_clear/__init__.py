@@ -77,11 +77,17 @@ class DelayedClear(Generic[T]):
         self._last_release = datetime.now()
 
     @contextmanager
-    def get(self, or_set: Callable[[], T]):
-        """Get the contained value. If it isn't set, `or_set` is called to set
-        it."""
+    def get(self, or_set: Callable[[], T], reset_condition: Optional[Callable[[T], bool]] = None):
+        """Get the contained value.
+        
+        If it isn't set, `or_set` is called to set it.
 
-        if not hasattr(self, "_value"):
+        If it is set, but `reset_condition` is given and evaluates to `True`, it
+        is still replaced with `or_set`."""
+
+        if (not hasattr(self, "_value")) or (
+            reset_condition is not None and reset_condition(self._value)
+        ):
             self.set(or_set())
 
         try:
@@ -93,7 +99,6 @@ class DelayedClear(Generic[T]):
 
     def set(self, value: T):
         """Set the value, independent of whether it is currently in use."""
-
 
         self._value = value
         self._value_set.set()
@@ -132,4 +137,3 @@ class DelayedClear(Generic[T]):
             return True
         else:
             return False
-
